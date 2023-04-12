@@ -1,11 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+# install vagrant-sshfs before running the vagrant up
+# sudo apt install vagrant-sshfs 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  os = "generic/ubuntu2004"
+  os = "generic/ubuntu2204"
   net_ip = "192.168.56"
 
   config.vm.define :master, primary: true do |master_config|
@@ -18,8 +19,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     master_config.vm.box = "#{os}"
     master_config.vm.host_name = 'saltmaster.local'
     master_config.vm.network "private_network", ip: "#{net_ip}.10"
-    master_config.vm.synced_folder "saltstack/salt/", "/srv/salt"
-    master_config.vm.synced_folder "saltstack/pillar/", "/srv/pillar"
+    master_config.vm.synced_folder "saltstack/salt/", "/srv/salt", type: "sshfs"
+    master_config.vm.synced_folder "saltstack/pillar/", "/srv/pillar", type: "sshfs"
 
     master_config.vm.provision :salt do |salt|
       salt.master_config = "saltstack/etc/master"
